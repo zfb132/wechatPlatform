@@ -9,18 +9,10 @@ import logging
 
 from wechatpy.utils import check_signature
 from wechatpy.exceptions import InvalidSignatureException
-from wechatpy import parse_message
-from wechatpy.replies import TextReply
-from wechatpy.replies import ImageReply
+
+from app.model.handleWeChatMsg import handlemsg
 
 logging = logging.getLogger('runserver.main')
-
-def handlemsg(data):
-    msg = parse_message(data)
-    print(msg)
-    logging.debug('handle msg:'.format(msg))
-    xml = txtreply(msg,config.DEFAULTMSG + msg.content)
-    return xml
 
 # 微信消息接口
 @app.route('/',methods=["POST","GET"])
@@ -50,13 +42,3 @@ def main():
     except Exception as e:
         logging.error('获取参数失败: '.format(e))
 
-def imgreply(msg,id):
-    reply = ImageReply(message=msg)
-    reply.media_id = id
-    xml = reply.render()
-    return xml
-
-def txtreply(msg,txt):
-    reply = TextReply(content=txt, message=msg)
-    xml = reply.render()
-    return xml
