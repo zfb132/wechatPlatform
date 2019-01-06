@@ -1,0 +1,4 @@
+flask
+wechatpy
+cryptography
+pycrypto
