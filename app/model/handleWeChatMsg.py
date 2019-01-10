@@ -17,9 +17,9 @@ logging = logging.getLogger('runserver.handleWeChatMsg')
 # type        消息的类型
 def handlemsg(data):
     msg = parse_message(data)
-    print(msg)
-    logging.debug('handle msg:'.format(msg))
-    txt = '你发送了 :{}\n你的id是：{}'.format(msg.content, msg.source)
+    #print(msg)
+    logging.debug('id为{}的用户发送消息:{}'.format(msg.source,msg.content))
+    txt = '你发送了 :{}'.format(msg.content)
     xml = txtreply(msg, txt)
     #activeSend(msg)
     return xml
