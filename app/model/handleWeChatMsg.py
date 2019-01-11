@@ -24,12 +24,6 @@ def handlemsg(data):
     #activeSend(msg)
     return xml
 
-def activeSend(msg):
-    client = WeChatClient(APPID, APPSECRET)
-    logging.debug(client.access_token)
-    #res = client.message.send_text(id,content)
-    return 
-
 def txtreply(msg,txt):
     reply = TextReply(content=txt, message=msg)
     xml = reply.render()
