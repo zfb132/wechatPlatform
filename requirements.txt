@@ -2,3 +2,4 @@ flask
 wechatpy
 cryptography
 pycrypto
+pymysql
