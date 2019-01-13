@@ -5,31 +5,9 @@ from wechatpy import parse_message
 from wechatpy.replies import TextReply
 from wechatpy.replies import ImageReply
 from wechatpy import WeChatClient
-from app.config import APPID,APPSECRET,DBNAME,DBPWD
+from app.model.Menu import parsecontent
 
 logging = logging.getLogger('runserver.handleWeChatMsg')
-db = pymysql.connect(host='localhost', user='root',
-                         password=DBPWD, db=DBNAME,
-                         port=3306, charset='utf8')
-
-
-#sql = "SELECT * FROM chinese WHERE id >= ((SELECT MAX(id) FROM chinese)-(SELECT MIN(id) FROM chinese)) * RAND() + (SELECT MIN(id) FROM chinese) LIMIT {}".format(num)
-def randomdata(tablename,maxID):
-    db = pymysql.connect(host='localhost', user='root',
-                         password=DBPWD, db=DBNAME,
-                         port=3306, charset='utf8')
-    cursor = db.cursor()
-    num = 5
-    result = []
-    for i in range(num):
-        offset = random.randint(1, maxID)
-        sql = 'select content from {} where id>={} limit 1;'.format(tablename,offset)
-        cursor.execute(sql)
-        record = list(cursor.fetchone())[0]
-        result.append(record)
-    cursor.close()
-    db.close()
-    return ', '.join(result)
 
 
 # 未认证的订阅号 
@@ -46,22 +24,7 @@ def handlemsg(data):
     logging.debug('id为{}的用户发送消息:{}'.format(msg.source,msg.content))
     #txt = '你发送了 :{}'.format(msg.content)
     content = msg.content
-    if '名字' in content:
-        if '中国' in content:
-            txt = randomdata('chinese',1896600)
-        elif '日本' in content:
-            txt = randomdata('japanese',185500)
-        elif '英国' in content:
-            txt = randomdata('english',29710)
-        elif '美国' in content:
-            txt = randomdata('english',29710)
-        else:
-            txt = randomdata('chinese',1896600)
-    else:
-        if '成语' in content:
-            txt = randomdata('idiom',50370)
-        else:
-            txt = '你发送了 :{}'.format(content)
+    txt = parsecontent(content)
     xml = txtreply(msg, txt)
     #activeSend(msg)
     return xml
