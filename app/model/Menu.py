@@ -17,7 +17,7 @@ def getcommand(content):
     if '名字' in content:
         if '中国' in content or "中文" in content:
             return 1
-        elif '日本' in content:
+        elif '日本' in content or '日语' in content:
             return 2
         elif '英国' in content or '美国' in content or '英语' in content or "英文" in content:
             return 3
@@ -32,7 +32,7 @@ def getcommand(content):
 def parsecontent(content):
     command = getcommand(content)
     if command == 0:
-        txt = defaultReply()
+        txt = defaultReply(content)
     elif command == 1:
         txt = randomdata('chinese',1896600)
     elif command == 2:
@@ -42,7 +42,7 @@ def parsecontent(content):
     elif command == 4:
         txt = randomdata('idiom',50370)
     elif command == 5:
-        txt = defaultReply()
+        txt = errorReply(content)
     return txt
 
 
@@ -67,6 +67,7 @@ def randomdata(tablename,maxID):
 def errorReply(content):
     return '你发送了 :{}'.format(content)
 
-def defaultReply():
-    return "hhh"
+# 伪对话AI
+def defaultReply(content):
+    return content.replace('你', '我').replace('吗', '呀').replace('?', '!')
 
