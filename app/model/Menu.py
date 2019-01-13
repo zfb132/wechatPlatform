@@ -6,7 +6,13 @@ import pymysql
 import random
 from app.config import DBNAME, DBPWD
 
-
+# 命令列表
+# 0  未知命令
+# 1  随机返回5个中文名字
+# 2  随机返回五个日本名字
+# 3  随机返回五个英语名字
+# 4  随机返回五个成语
+# 5  成语接龙
 def getcommand(content):
     if '名字' in content:
         if '中国' in content or "中文" in content:
@@ -25,7 +31,19 @@ def getcommand(content):
 
 def parsecontent(content):
     command = getcommand(content)
-    return switchdict.get(command, errorReply(content))
+    if command == 0:
+        txt = defaultReply()
+    elif command == 1:
+        txt = randomdata('chinese',1896600)
+    elif command == 2:
+        txt = randomdata('japanese',185500)
+    elif command == 3:
+        txt = randomdata('english',29710)
+    elif command == 4:
+        txt = randomdata('idiom',50370)
+    elif command == 5:
+        txt = defaultReply()
+    return txt
 
 
 #sql = "SELECT * FROM chinese WHERE id >= ((SELECT MAX(id) FROM chinese)-(SELECT MIN(id) FROM chinese)) * RAND() + (SELECT MIN(id) FROM chinese) LIMIT {}".format(num)
@@ -51,22 +69,4 @@ def errorReply(content):
 
 def defaultReply():
     return "hhh"
-
-
-# 命令列表
-# 0  未知命令
-# 1  随机返回5个中文名字
-# 2  随机返回五个日本名字
-# 3  随机返回五个英语名字
-# 4  随机返回五个成语
-# 5  成语接龙
-
-switchdict = {
-    0: defaultReply(),
-    1: randomdata('chinese',1896600),
-    2: randomdata('japanese',185500),
-    3: randomdata('english',29710),
-    4: randomdata('idiom',50370),
-    5: defaultReply()
-}
 
