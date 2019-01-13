@@ -15,6 +15,9 @@ db = pymysql.connect(host='localhost', user='root',
 
 #sql = "SELECT * FROM chinese WHERE id >= ((SELECT MAX(id) FROM chinese)-(SELECT MIN(id) FROM chinese)) * RAND() + (SELECT MIN(id) FROM chinese) LIMIT {}".format(num)
 def randomdata(tablename,maxID):
+    db = pymysql.connect(host='localhost', user='root',
+                         password=DBPWD, db=DBNAME,
+                         port=3306, charset='utf8')
     cursor = db.cursor()
     num = 5
     result = []
@@ -25,6 +28,7 @@ def randomdata(tablename,maxID):
         record = list(cursor.fetchone())[0]
         result.append(record)
     cursor.close()
+    db.close()
     return ', '.join(result)
 
 
