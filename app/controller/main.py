@@ -11,8 +11,15 @@ from wechatpy.utils import check_signature
 from wechatpy.exceptions import InvalidSignatureException
 
 from app.model.handleWeChatMsg import handlemsg
+from app.model.SQLHelper import initDataBase, initTable, saveContent
 
+# 初始化
 logging = logging.getLogger('runserver.main')
+initDataBase(config.DBMSGNAME, config.DBPWD)
+initTable(config.DBMSGNAME, 'msg', config.DBPWD)
+
+# 存放临时的消息记录列表
+records = []
 
 # 微信消息接口
 @app.route('/',methods=["POST","GET"])
@@ -38,7 +45,14 @@ def main():
         # 也可以通过POST与GET来区别
         # 不是在进行服务器验证，而是正常提交用户数据
         logging.debug('开始处理用户消息')
-        xml = handlemsg(request.data)
+        result = handlemsg(request.data)
+        xml = result[0]
+        # 若只调用records的值则不需要这句话
+        global records
+        records.append(result[1])
+        if(len(records)>=10):
+            saveContent(config.DBMSGNAME, config.DBPWD, 'msg', records)
+            records = []
         return xml
     # 处理异常情况或忽略
     except Exception as e:

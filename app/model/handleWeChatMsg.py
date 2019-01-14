@@ -6,6 +6,7 @@ from wechatpy.replies import TextReply
 from wechatpy.replies import ImageReply
 from wechatpy import WeChatClient
 from app.model.Menu import parsecontent
+from app.config import DBMSGNAME, DBPWD
 
 logging = logging.getLogger('runserver.handleWeChatMsg')
 
@@ -26,8 +27,13 @@ def handlemsg(data):
     content = msg.content
     txt = parsecontent(content)
     xml = txtreply(msg, txt)
-    #activeSend(msg)
-    return xml
+    #if(len(records)>=10):
+    #    saveContent(DBMSGNAME,DBPWD,'msg',records)
+    #    records = []
+    # 保存数据
+    stime = msg.create_time.strftime('%Y-%m-%d %H:%M:%S')
+    record = {"openid":msg.source,"name":"","send":content,"receive":txt,"time":stime}
+    return [xml,record]
 
 def txtreply(msg,txt):
     reply = TextReply(content=txt, message=msg)

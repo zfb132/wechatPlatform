@@ -3,8 +3,8 @@
 # author: 'zfb'
 # time: 19-01-13 17:31:57
 import pymysql
-import random
 from app.config import DBNAME, DBPWD
+from app.model.SQLHelper import randomdata
 
 # 命令列表
 # 0  菜单
@@ -43,37 +43,18 @@ def parsecontent(content):
     if command == 0:
         txt = menuReply()
     elif command == 1:
-        txt = randomdata('chinese',1896600)
+        txt = randomdata(DBNAME,DBPWD,'chinese',1896600)
     elif command == 2:
-        txt = randomdata('japanese',185500)
+        txt = randomdata(DBNAME,DBPWD,'japanese',185500)
     elif command == 3:
-        txt = randomdata('english',29710)
+        txt = randomdata(DBNAME,DBPWD,'english',29710)
     elif command == 4:
-        txt = randomdata('idiom',50370)
+        txt = randomdata(DBNAME,DBPWD,'idiom',50370)
     elif command == 5:
         txt = tempReply(content)
     else:
         txt = defaultReply(content)
     return txt
-
-
-#sql = "SELECT * FROM chinese WHERE id >= ((SELECT MAX(id) FROM chinese)-(SELECT MIN(id) FROM chinese)) * RAND() + (SELECT MIN(id) FROM chinese) LIMIT {}".format(num)
-def randomdata(tablename,maxID):
-    db = pymysql.connect(host='localhost', user='root',
-                         password=DBPWD, db=DBNAME,
-                         port=3306, charset='utf8')
-    cursor = db.cursor()
-    num = 5
-    result = []
-    for i in range(num):
-        offset = random.randint(1, maxID)
-        sql = 'select content from {} where id>={} limit 1;'.format(tablename,offset)
-        cursor.execute(sql)
-        record = list(cursor.fetchone())[0]
-        result.append(record)
-    cursor.close()
-    db.close()
-    return ', '.join(result)
 
 
 def menuReply():
