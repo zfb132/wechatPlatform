@@ -3,7 +3,7 @@
 # author: 'zfb'
 # time: 19-01-05 19:34:14
 from app import app
-from flask import request
+from flask import request, redirect, url_for
 import app.config as config
 import logging
 
@@ -18,6 +18,8 @@ logging = logging.getLogger('runserver.main')
 @app.route('/',methods=["POST","GET"])
 def main():
     logging.debug('进入主页面')
+    if(len(request.args)<2):
+        return redirect(url_for('index'))
     try:
         signature = request.args.get("signature", "")
         timestamp = request.args.get("timestamp", "")
@@ -40,5 +42,10 @@ def main():
         return xml
     # 处理异常情况或忽略
     except Exception as e:
-        logging.error('获取参数失败: '.format(e))
+        print(repr(e))
+
+@app.route('/index',methods=["GET"])
+def index():
+    logging.debug('GET访问')
+    return redirect("https://blog.whuzfb.cn/blog/2019/01/06/wechat_platform/", code=301)
 
