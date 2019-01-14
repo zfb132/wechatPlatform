@@ -6,7 +6,7 @@ if [ $? -eq 0 ];then
 else
     echo "Fail to kill $PORT port"
 fi
-NAME=~/wechatPlatform/server.log
+NAME=~/wechatPlatform/log/server.log
 uwsgi uwsgi_wechat.ini -d $NAME > /dev/null 2>&1
 if [ $? -eq 0 ];then
     echo "Restart successfully!"
