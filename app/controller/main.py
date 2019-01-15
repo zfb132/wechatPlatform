@@ -10,7 +10,7 @@ import logging
 from wechatpy.utils import check_signature
 from wechatpy.exceptions import InvalidSignatureException
 
-from app.model.handleWeChatMsg import handlemsg
+from app.model.HandleWeChatMsg import handlemsg
 from app.model.SQLHelper import initDataBase, initTable, saveContent
 
 # 初始化
@@ -20,6 +20,7 @@ initTable(config.DBMSGNAME, 'msg', config.DBPWD)
 
 # 存放临时的消息记录列表
 records = []
+MAXLEN = 10
 
 # 微信消息接口
 @app.route('/',methods=["POST","GET"])
@@ -50,7 +51,7 @@ def main():
         # 若只调用records的值则不需要这句话
         global records
         records.append(result[1])
-        if(len(records)>=10):
+        if(len(records)>=MAXLEN):
             saveContent(config.DBMSGNAME, config.DBPWD, 'msg', records)
             records = []
         return xml
