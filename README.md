@@ -8,4 +8,5 @@
 ## 运行
 启动程序：在shell窗口输入 `uwsgi uwsgi_wechat.ini -d ./log/server.log`  
 终止程序：在shell窗口输入 `kill -9 $(lsof -t -i:8111)`  
-重启程序：shell窗口输入 `chmod +x restart.sh` 给文件 `restart.sh` 执行权限，然后输入 `./restart.sh` 来执行此脚本
+重启程序：shell窗口输入 `chmod +x restart.sh` 给文件 `restart.sh` 执行权限，然后输入 `./restart.sh` 来执行此脚本  
+**初学者注意**：此时程序运行在服务器端的8111端口，若要联通微信的网站接口认证，还要配置 `nginx` 反向代理，参考[此文章](https://blog.whuzfb.cn/blog/2019/01/06/wechat_platform/ "网址")即可
