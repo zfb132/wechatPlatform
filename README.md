@@ -1,5 +1,8 @@
 # wechatPlatform
 微信公众号的开发
+## 准备工作
+本仓库的使用教程，参考[此文章](https://blog.whuzfb.cn/blog/2019/01/06/wechat_platform/ "网址")  
+如果需要对接各国人名的数据库，那么首先下载人名数据并存入数据库，参考[此仓库](https://github.com/zfb132/ParseNames "网址")  
 ## 功能
 下面是命令列表  
 
@@ -11,9 +14,6 @@
 |3|随机返回五个英语名字|  
 |4|随机返回五个成语|  
 |5|成语接龙（待实现）|  
-## 准备工作
-本仓库的使用教程，参考[此文章](https://blog.whuzfb.cn/blog/2019/01/06/wechat_platform/ "网址")  
-如果需要对接各国人名的数据库，那么首先下载人名数据并存入数据库，参考[此仓库](https://github.com/zfb132/ParseNames "网址")  
 ### 详细操作
 1. 在shell窗口切换到本目录，输入 `python3 -m venv myvenv` 创建 Python3 虚拟环境，然后激活此环境并安装 `requirements.txt` 中的依赖库
 2. 安装MySQL，创建 `names` 数据库
