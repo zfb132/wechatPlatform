@@ -58,7 +58,7 @@ def parsecontent(content):
 
 
 def menuReply():
-    txt = '命令列表\n0  菜单\n1  随机返回5个中文名字\n2  随机返回五个日本名字\n3  随机返回五个英语名字\n4  随机返回五个成语\n5  成语接龙'
+    txt = '命令列表\n0  菜单\n1  随机返回5个中文名字\n2  随机返回五个日本名字\n3  随机返回五个英语名字\n4  随机返回五个成语\n5  成语接龙(未实现)'
     return txt
 
 def tempReply(content):
