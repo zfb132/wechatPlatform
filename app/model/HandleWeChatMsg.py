@@ -6,7 +6,8 @@ from wechatpy.replies import TextReply
 from wechatpy.replies import ImageReply
 from wechatpy import WeChatClient
 from app.model.Menu import parsecontent
-from app.config import DBMSGNAME, DBPWD
+from app.config import DBMSGNAME, DBPWD, DBUSERTABLE, INFOPWD
+from app.model.SQLHelper import hasRight, saveUser
 
 logging = logging.getLogger('runserver.handleWeChatMsg')
 
@@ -25,13 +26,27 @@ def handlemsg(data):
     logging.debug('id为{}的用户发送消息:{}'.format(msg.source,msg.content))
     #txt = '你发送了 :{}'.format(msg.content)
     content = msg.content
-    txt = parsecontent(content)
+    stime = msg.create_time.strftime('%Y-%m-%d %H:%M:%S')
+    # 判断权限
+    if hasRight(DBMSGNAME, DBPWD, DBUSERTABLE, msg.source):
+        # 已认证用户
+        if content == INFOPWD:
+            txt = "您已经被授权获取信息，请勿重复认证"
+        else:
+            txt = parsecontent(content)
+    else:
+        # 判断用户首次认证是否成功
+        if content == INFOPWD:
+            saveUser(DBMSGNAME, DBPWD, DBUSERTABLE, msg.source, stime)
+            txt = "恭喜您，绑定成功！"
+        else:
+            txt = "请先输入秘钥认证"
     xml = txtreply(msg, txt)
     #if(len(records)>=10):
     #    saveContent(DBMSGNAME,DBPWD,'msg',records)
     #    records = []
     # 保存数据
-    stime = msg.create_time.strftime('%Y-%m-%d %H:%M:%S')
+    # stime = msg.create_time.strftime('%Y-%m-%d %H:%M:%S')
     record = {"openid":msg.source,"name":"","send":content,"receive":txt,"time":stime}
     return [xml,record]
 

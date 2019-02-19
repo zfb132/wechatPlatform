@@ -72,3 +72,51 @@ def saveContent(dbname, pwd, tablename, records):
     cursor.close()
     db.close()
 
+def initUserTable(dbname, tablename, pwd):
+    try:
+        db = pymysql.connect(host='localhost',user='root',
+            password=pwd, db=dbname, port=3306, charset='UTF8MB4')
+        cursor = db.cursor()
+        # 由于微信每次发送内容字数限制，所以2000个字符位置已经足够了
+        sql = 'create table if not exists {}(\
+                id int(20) auto_increment,\
+                openid varchar(30) default null,\
+                name varchar(20) default null,\
+                time datetime default null,\
+                primary key(id)\
+            )engine=InnoDB default charset=UTF8MB4'.format(tablename)
+        cursor.execute(sql)
+        cursor.close()
+        db.close()
+        print("创建数据表{}成功".format(tablename))
+    except Exception as e:
+        print(e)
+
+
+def saveUser(dbname, pwd, tablename, openid, time):
+    db = pymysql.connect(host='localhost', user='root',
+                         password=pwd, db=dbname,
+                         port=3306, charset='utf8')
+    cursor = db.cursor()
+    sql = 'insert into {}(openid,time) values ("{}","{}")'.format(tablename, openid,time)
+    print(sql)
+    cursor.execute(sql)
+    cursor.execute("commit")
+    cursor.close()
+    db.close()
+
+def hasRight(dbname, pwd, tablename, openid):
+    db = pymysql.connect(host='localhost', user='root',
+                         password=pwd, db=dbname,
+                         port=3306, charset='utf8')
+    cursor = db.cursor()
+    sql = 'select * from {} where openid = "{}"'.format(tablename, openid)
+    print(sql)
+    cursor.execute(sql)
+    record = cursor.fetchone()
+    print(record)
+    cursor.close()
+    db.close()
+    return record
+
+    
