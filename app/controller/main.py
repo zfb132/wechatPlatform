@@ -11,13 +11,13 @@ from wechatpy.utils import check_signature
 from wechatpy.exceptions import InvalidSignatureException
 
 from app.model.HandleWeChatMsg import handlemsg
-from app.model.SQLHelper import initDataBase, initTable, saveContent, initUserTable
+from app.model.SQLHelper import initDataBase, initHistoryTable, saveContent, initUserTable
 
 # 初始化
 logging = logging.getLogger('runserver.main')
-initDataBase(config.DBMSGNAME, config.DBPWD)
-initTable(config.DBMSGNAME, config.DBHISTORYTABLE, config.DBPWD)
-initUserTable(config.DBMSGNAME, config.DBUSERTABLE, config.DBPWD)
+initDataBase()
+initHistoryTable()
+initUserTable()
 
 # 存放临时的消息记录列表
 records = []
@@ -53,7 +53,7 @@ def main():
         global records
         records.append(result[1])
         if(len(records)>=MAXLEN):
-            saveContent(config.DBMSGNAME, config.DBPWD, config.DBHISTORYTABLE, records)
+            saveContent(records)
             records = []
         return xml
     # 处理异常情况或忽略

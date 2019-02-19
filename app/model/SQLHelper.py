@@ -4,25 +4,27 @@
 # time: 19-01-14 17:06:28
 import random
 import pymysql
+from app.config import DBMSGNAME, DBHISTORYTABLE, DBUSERTABLE, DBPWD
 
-def initDataBase(dbname, pwd):
+def initDataBase():
     try:
-        db = pymysql.connect(host='localhost',user='root', password=pwd, port=3306)
+        db = pymysql.connect(host='localhost',user='root', password=DBPWD, port=3306)
         cursor = db.cursor()
         cursor.execute(
-            "create database if not exists {} default character set UTF8MB4".format(dbname))
+            "create database if not exists {} default character set UTF8MB4".format(DBMSGNAME))
         cursor.close()
         db.close()
-        print("创建数据库{}成功".format(dbname))
+        print("创建数据库{}成功".format(DBMSGNAME))
     except Exception as e:
         print(e)
         
-def initTable(dbname, tablename, pwd):
+def initHistoryTable():
     try:
         db = pymysql.connect(host='localhost',user='root', 
-            password=pwd, db=dbname, port=3306, charset='UTF8MB4')
+            password=DBPWD, db=DBMSGNAME, port=3306, charset='UTF8MB4')
         cursor = db.cursor()
         # 由于微信每次发送内容字数限制，所以2000个字符位置已经足够了
+        tablename = DBHISTORYTABLE
         sql = 'create table if not exists {}(\
                 id int(20) auto_increment,\
                 openid varchar(30) default null,\
@@ -59,25 +61,26 @@ def randomdata(dbname, pwd, tablename, maxID):
     return ', '.join(result)
 
 
-def saveContent(dbname, pwd, tablename, records):
+def saveContent(records):
     db = pymysql.connect(host='localhost', user='root',
-                         password=pwd, db=dbname,
+                         password=DBPWD, db=DBMSGNAME,
                          port=3306, charset='utf8')
     cursor = db.cursor()
     for record in records:
-        sql = 'insert into {}(openid,name,send,receive,time) values ("{}","{}","{}","{}","{}")'.format(tablename,record['openid'],record['name'],record['send'],record['receive'],record['time'])
+        sql = 'insert into {}(openid,name,send,receive,time) values ("{}","{}","{}","{}","{}")'.format(DBHISTORYTABLE,record['openid'],record['name'],record['send'],record['receive'],record['time'])
         print(sql)
         cursor.execute(sql)
     cursor.execute("commit")
     cursor.close()
     db.close()
 
-def initUserTable(dbname, tablename, pwd):
+def initUserTable():
     try:
         db = pymysql.connect(host='localhost',user='root',
-            password=pwd, db=dbname, port=3306, charset='UTF8MB4')
+            password=DBPWD, db=DBMSGNAME, port=3306, charset='UTF8MB4')
         cursor = db.cursor()
         # 由于微信每次发送内容字数限制，所以2000个字符位置已经足够了
+        tablename = DBUSERTABLE
         sql = 'create table if not exists {}(\
                 id int(20) auto_increment,\
                 openid varchar(30) default null,\
@@ -93,24 +96,24 @@ def initUserTable(dbname, tablename, pwd):
         print(e)
 
 
-def saveUser(dbname, pwd, tablename, openid, time):
+def saveUser(openid, time):
     db = pymysql.connect(host='localhost', user='root',
-                         password=pwd, db=dbname,
+                         password=DBPWD, db=DBMSGNAME,
                          port=3306, charset='utf8')
     cursor = db.cursor()
-    sql = 'insert into {}(openid,time) values ("{}","{}")'.format(tablename, openid,time)
+    sql = 'insert into {}(openid,time) values ("{}","{}")'.format(DBUSERTABLE, openid, time)
     print(sql)
     cursor.execute(sql)
     cursor.execute("commit")
     cursor.close()
     db.close()
 
-def hasRight(dbname, pwd, tablename, openid):
+def hasRight(openid):
     db = pymysql.connect(host='localhost', user='root',
-                         password=pwd, db=dbname,
+                         password=DBPWD, db=DBMSGNAME,
                          port=3306, charset='utf8')
     cursor = db.cursor()
-    sql = 'select * from {} where openid = "{}"'.format(tablename, openid)
+    sql = 'select * from {} where openid = "{}"'.format(DBUSERTABLE, openid)
     print(sql)
     cursor.execute(sql)
     record = cursor.fetchone()
