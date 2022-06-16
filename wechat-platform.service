@@ -1,0 +1,14 @@
+[Unit]
+Description=Wechat Platform service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Restart=on-failure
+RestartSec=5s
+WorkingDirectory=/home/ubuntu/wechatPlatform
+ExecStart=/home/ubuntu/wechatPlatform/myvenv/bin/uwsgi --ini /home/ubuntu/wechatPlatform/uwsgi_wechat.ini
+
+[Install]
+WantedBy=multi-user.target
